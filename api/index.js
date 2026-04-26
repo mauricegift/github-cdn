@@ -22,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+app.set('trust proxy', 1);
 app.set('json spaces', 2);
 app.use(express.static(path.join(__dirname, '../public')));
 
