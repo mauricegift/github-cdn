@@ -8,14 +8,14 @@
 
 Upload images, videos, audio and documents through a clean web UI or a public API — get a permanent jsDelivr CDN link back instantly. No database required.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-ghbcdn.giftedtech.co.ke-brightgreen?style=for-the-badge)](https://ghbcdn.giftedtech.co.ke)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-ghbcdn.gifted.co.ke-brightgreen?style=for-the-badge)](https://ghbcdn.gifted.co.ke)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)](./package.json)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
 [![GitHub API](https://img.shields.io/badge/Storage-GitHub%20API-181717?style=for-the-badge&logo=github&logoColor=white)](https://docs.github.com/en/rest)
 [![jsDelivr](https://img.shields.io/badge/CDN-jsDelivr-E84D3D?style=for-the-badge&logo=jsdelivr&logoColor=white)](https://www.jsdelivr.com/)
 [![License](https://img.shields.io/badge/license-MIT-yellow?style=for-the-badge)](#-license)
 
-[Live Demo](https://ghbcdn.giftedtech.co.ke) • [Storage Repo](https://github.com/mauricegift/ghbcdn) • [Report Bug](https://github.com/mauricegift/github-cdn/issues) • [WhatsApp Channel](https://whatsapp.com/channel/0029VbCpYtZLtOj5LDuj7Q1p)
+[Live Demo](https://ghbcdn.gifted.co.ke) • [Storage Repo](https://github.com/mauricegift/ghbcdn) • [Report Bug](https://github.com/mauricegift/github-cdn/issues) • [WhatsApp Channel](https://whatsapp.com/channel/0029VbCpYtZLtOj5LDuj7Q1p)
 
 </div>
 
@@ -151,7 +151,7 @@ It's perfect for:
 
 | Page | URL |
 | --- | --- |
-| Upload UI | <https://ghbcdn.giftedtech.co.ke> |
+| Upload UI | <https://ghbcdn.gifted.co.ke> |
 | Storage Repo | <https://github.com/mauricegift/ghbcdn> |
 
 ---
@@ -354,7 +354,7 @@ sudo certbot --nginx -d ghbcdn.yourdomain.com
 ## 📡 API Reference
 
 > Base URL (your deployment): `https://ghbcdn.yourdomain.com`
-> Live demo base URL: `https://ghbcdn.giftedtech.co.ke`
+> Live demo base URL: `https://ghbcdn.gifted.co.ke`
 
 ### 🔼 Upload a File — `POST /api/upload.php`
 
@@ -369,7 +369,7 @@ Public endpoint — **no CAPTCHA required**. Use it from scripts, bots, or mobil
 #### cURL example
 
 ```bash
-curl -X POST https://ghbcdn.giftedtech.co.ke/api/upload.php \
+curl -X POST https://ghbcdn.gifted.co.ke/api/upload.php \
   -F "file=@/path/to/photo.jpg"
 ```
 
@@ -379,7 +379,7 @@ curl -X POST https://ghbcdn.giftedtech.co.ke/api/upload.php \
 const form = new FormData();
 form.append('file', fileInput.files[0]);
 
-const res = await fetch('https://ghbcdn.giftedtech.co.ke/api/upload.php', {
+const res = await fetch('https://ghbcdn.gifted.co.ke/api/upload.php', {
   method: 'POST',
   body: form
 });
@@ -394,7 +394,7 @@ import requests
 
 with open('photo.jpg', 'rb') as f:
     r = requests.post(
-        'https://ghbcdn.giftedtech.co.ke/api/upload.php',
+        'https://ghbcdn.gifted.co.ke/api/upload.php',
         files={'file': f}
     )
 print(r.json()['rawUrl'])
@@ -443,7 +443,7 @@ Removes the file from your GitHub storage repo. Requires a valid Cloudflare Turn
 #### cURL example
 
 ```bash
-curl -X DELETE https://ghbcdn.giftedtech.co.ke/giftedDelete.php \
+curl -X DELETE https://ghbcdn.gifted.co.ke/giftedDelete.php \
   -H "Content-Type: application/json" \
   -d '{"filename":"image/Xy3-photo.jpg","turnstileResponse":"<token>"}'
 ```
@@ -647,10 +647,10 @@ MIT © 2024 - Present  Maurice Gift / GiftedTech
 
 **Maurice Gift** — *Founder, GiftedTech*
 
-- 🌐 Website: <https://me.giftedtech.co.ke>
-- 🚀 Live CDN: <https://ghbcdn.giftedtech.co.ke>
+- 🌐 Website: <https://me.gifted.co.ke>
+- 🚀 Live CDN: <https://ghbcdn.gifted.co.ke>
 - 💼 GitHub: [@mauricegift](https://github.com/mauricegift)
-- 📧 Email: [founder@giftedtech.co.ke](mailto:founder@giftedtech.co.ke)
+- 📧 Email: [maurice@gifted.co.ke](mailto:maurice@gifted.co.ke)
 - 💬 WhatsApp Channel: [Follow for updates](https://whatsapp.com/channel/0029VbCpYtZLtOj5LDuj7Q1p)
 
 ---
