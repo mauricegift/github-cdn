@@ -405,7 +405,8 @@ print(r.json()['rawUrl'])
 ```json
 {
   "success": true,
-  "rawUrl": "https://cdn.jsdelivr.net/gh/mauricegift/ghbcdn@main/image/Xy3-photo.jpg"
+  "rawUrl": "https://cdn.jsdelivr.net/gh/mauricegift/ghbcdn@main/image/Xy3-photo.jpg",
+  "urlType": "cdn"
 }
 ```
 
@@ -415,9 +416,31 @@ print(r.json()['rawUrl'])
 {
   "success": true,
   "rawUrl": "https://cdn.jsdelivr.net/gh/mauricegift/ghbcdn@main/image/Xy3-photo.jpg",
+  "urlType": "cdn",
   "message": "File already exists, returning existing URL"
 }
 ```
+
+#### 20MB Raw URL Fallback
+
+jsDelivr **cannot serve files larger than 20 MB**. For any upload over 20 MB, the API automatically returns a `raw.githubusercontent.com` URL instead of a jsDelivr one — no action needed on your side.
+
+| File size | `rawUrl` format | `urlType` |
+| --- | --- | --- |
+| ≤ 20 MB | `https://cdn.jsdelivr.net/gh/{user}/{repo}@{branch}/{path}` | `cdn` |
+| > 20 MB | `https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}` | `raw` |
+
+Example response for a 35 MB video:
+
+```json
+{
+  "success": true,
+  "rawUrl": "https://raw.githubusercontent.com/mauricegift/ghbcdn/main/video/Ab1-clip.mp4",
+  "urlType": "raw"
+}
+```
+
+Use the `urlType` field if your client needs to know which host is serving the file. The raw host can be overridden with the `RAW_API_URL` environment variable (default: `https://raw.githubusercontent.com`).
 
 #### Error responses
 
@@ -519,6 +542,7 @@ github-cdn/
 | `REPO_BRANCH` | ❌ | `main` | Branch to commit files to |
 | `COMMIT_MESSAGE` | ❌ | `Github Cdn:Upload` | Commit message used when uploading files |
 | `CDN_API_URL` | ❌ | `https://cdn.jsdelivr.net/gh` | jsDelivr CDN base URL — don't change this |
+| `RAW_API_URL` | ❌ | `https://raw.githubusercontent.com` | Raw host used for files over 20 MB (jsDelivr can't serve them) |
 | `CF_TURNSTILE_SECRET_KEY` | ✅* | — | Turnstile secret key (*required for web UI CAPTCHA) |
 | `CF_TURNSTILE_API_URL` | ❌ | `https://challenges.cloudflare.com` | Turnstile verification endpoint |
 | `IMAGE_MIMETYPES` | ❌ | *built-in list* | Override the allowed image MIME types |

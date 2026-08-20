@@ -138,9 +138,15 @@ const JSDELIVR_MAX_SIZE = 20 * 1024 * 1024; // jsDelivr cannot serve files over 
 
 function buildRawUrl(filePath, fileSize) {
   if (fileSize > JSDELIVR_MAX_SIZE) {
-    return `${config.rawApiUrl}/${config.githubUser}/${config.githubRepo}/${config.repoBranch}/${filePath}`;
+    return {
+      rawUrl: `${config.rawApiUrl}/${config.githubUser}/${config.githubRepo}/${config.repoBranch}/${filePath}`,
+      urlType: 'raw'
+    };
   }
-  return `${config.cdnApiUrl}/${config.githubUser}/${config.githubRepo}@${config.repoBranch}/${filePath}`;
+  return {
+    rawUrl: `${config.cdnApiUrl}/${config.githubUser}/${config.githubRepo}@${config.repoBranch}/${filePath}`,
+    urlType: 'cdn'
+  };
 }
 
 async function uploadToGitHub(file, folder, res, includeTurnstile = true) {
@@ -161,10 +167,11 @@ async function uploadToGitHub(file, folder, res, includeTurnstile = true) {
     try {
       const existingFileResponse = await axios.get(apiUrl, { headers });
       if (existingFileResponse.data) {
-        const rawUrl = buildRawUrl(filePath, file.buffer.length);
+        const { rawUrl, urlType } = buildRawUrl(filePath, file.buffer.length);
         return res.json({ 
           success: true, 
           rawUrl: rawUrl,
+          urlType: urlType,
           message: 'File already exists, returning existing URL'
         });
       }
@@ -182,10 +189,11 @@ async function uploadToGitHub(file, folder, res, includeTurnstile = true) {
 
     await axios.put(apiUrl, data, { headers });
 
-    const rawUrl = buildRawUrl(filePath, file.buffer.length);
+    const { rawUrl, urlType } = buildRawUrl(filePath, file.buffer.length);
     res.json({ 
       success: true, 
-      rawUrl: rawUrl 
+      rawUrl: rawUrl,
+      urlType: urlType
     });
 
   } catch (error) {

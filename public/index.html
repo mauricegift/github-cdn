@@ -344,6 +344,64 @@
     }
 
     /* Result */
+    .progress-container {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .progress-container.active {
+      display: block;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background-color: var(--gray);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--primary);
+      border-radius: 5px;
+      transition: width 0.2s ease;
+    }
+
+    .progress-text {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+      text-align: center;
+    }
+
+    .url-badge {
+      display: none;
+      margin-left: 0.5rem;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 999px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .url-badge.cdn {
+      display: inline-block;
+      background-color: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .url-badge.raw {
+      display: inline-block;
+      background-color: rgba(99, 102, 241, 0.15);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
     .result {
       margin-top: 2rem;
       padding: 1.5rem;
@@ -581,10 +639,16 @@
             <div id="upload-turnstile" class="cf-turnstile-widget"></div>
           </div>
           <button class="submit-btn" id="submit-btn" disabled>Upload File</button>
+          <div class="progress-container" id="progress-container" data-testid="upload-progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill" data-testid="upload-progress-fill"></div>
+            </div>
+            <p class="progress-text" id="progress-text" data-testid="upload-progress-text">0%</p>
+          </div>
         </div>
 
         <div class="result" id="result">
-          <h3 class="result-title" id="result-title"></h3>
+          <h3 class="result-title" id="result-title"><span id="result-title-text"></span><span class="url-badge" id="url-badge" data-testid="url-type-badge"></span></h3>
           <p class="result-url" id="result-url"></p>
           <button class="copy-btn" id="copy-btn">Copy URL</button>
         </div>
@@ -641,8 +705,13 @@
     const submitBtn = document.getElementById('submit-btn');
     const resultDiv = document.getElementById('result');
     const resultTitle = document.getElementById('result-title');
+    const resultTitleText = document.getElementById('result-title-text');
+    const urlBadge = document.getElementById('url-badge');
     const resultUrl = document.getElementById('result-url');
     const copyBtn = document.getElementById('copy-btn');
+    const progressContainer = document.getElementById('progress-container');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
 
     const deleteForm = document.getElementById('delete-form');
     const filenameInput = document.getElementById('filename');
@@ -813,6 +882,29 @@
       }
     });
 
+    function uploadWithProgress(formData, onProgress) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/giftedUpload.php');
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+        };
+        xhr.onload = () => {
+          try { resolve(JSON.parse(xhr.responseText)); }
+          catch { reject(new Error('Invalid server response')); }
+        };
+        xhr.onerror = () => reject(new Error('Network error during upload'));
+        xhr.send(formData);
+      });
+    }
+
+    function setBadge(result) {
+      const urlType = result.urlType || (result.rawUrl.includes('raw.githubusercontent') ? 'raw' : 'cdn');
+      urlBadge.className = `url-badge ${urlType}`;
+      urlBadge.textContent = urlType === 'raw' ? 'Raw (>20MB)' : 'CDN Cached';
+      return urlType;
+    }
+
     submitBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       const theme = getSwalTheme();
@@ -827,28 +919,30 @@
       formData.append('file', file);
       formData.append('turnstileResponse', uploadTurnstileToken);
 
-      const loadingAlert = Swal.fire({
-        title: 'Uploading...',
-        html: 'Please wait while we upload your file',
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => Swal.showLoading(),
-        ...theme
-      });
+      submitBtn.disabled = true;
+      progressContainer.classList.add('active');
+      progressFill.style.width = '0%';
+      progressText.textContent = '0%';
 
       try {
-        const response = await fetch('/giftedUpload.php', { method: 'POST', body: formData });
-        const result = await response.json();
+        const result = await uploadWithProgress(formData, (percent) => {
+          progressFill.style.width = `${percent}%`;
+          progressText.textContent = percent < 100 ? `Uploading... ${percent}%` : 'Processing on GitHub...';
+        });
 
         if (result.success) {
-          loadingAlert.close();
+          progressContainer.classList.remove('active');
           resultDiv.className = 'result success';
-          resultTitle.textContent = 'Upload Successful!';
+          resultTitleText.textContent = 'Upload Successful!';
           resultUrl.textContent = result.rawUrl;
+          const urlType = setBadge(result);
+          const badgeNote = urlType === 'raw'
+            ? '<p><small>Served via raw.githubusercontent.com (file over 20MB)</small></p>'
+            : '<p><small>Served via jsDelivr CDN</small></p>';
 
           Swal.fire({
             title: 'Success!',
-            html: `<p><strong>File:</strong> ${file.name}</p><p><strong>Size:</strong> ${(file.size / (1024 * 1024)).toFixed(2)} MB</p><p><strong>URL:</strong> <a href="${result.rawUrl}" target="_blank">${result.rawUrl}</a></p>`,
+            html: `<p><strong>File:</strong> ${file.name}</p><p><strong>Size:</strong> ${(file.size / (1024 * 1024)).toFixed(2)} MB</p><p><strong>URL:</strong> <a href="${result.rawUrl}" target="_blank">${result.rawUrl}</a></p>${badgeNote}`,
             icon: 'success',
             ...theme
           });
@@ -860,12 +954,14 @@
           throw new Error(result.error || 'Upload failed');
         }
       } catch (error) {
-        loadingAlert.close();
+        progressContainer.classList.remove('active');
         resultDiv.className = 'result error';
-        resultTitle.textContent = 'Upload Failed';
+        resultTitleText.textContent = 'Upload Failed';
+        urlBadge.className = 'url-badge';
         resultUrl.textContent = error.message;
         Swal.fire({ title: 'Error', text: error.message, icon: 'error', ...theme });
         if (error.message.includes('CAPTCHA')) resetUploadTurnstile();
+        else submitBtn.disabled = !uploadTurnstileToken;
       }
     });
 
