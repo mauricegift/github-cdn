@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="https://telegra.ph/file/c2a4d8d65722553da4c89.jpg" alt="GitHub CDN Logo" width="120" style="border-radius:50%"/>
+<img src="https://files.gifted.co.ke/image/github-cdn.png" alt="GitHub CDN Logo" width="120" style="border-radius:50%"/>
 
-# 🚀 GitHub CDN
+# GitHub CDN
 
 **A lightweight, self-hosted file CDN powered by GitHub Repositories + jsDelivr.**
 
@@ -21,7 +21,7 @@ Upload images, videos, audio and documents through a clean web UI or a public AP
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
 1. [What is GitHub CDN?](#-what-is-github-cdn)
 2. [Features](#-features)
@@ -52,7 +52,7 @@ Upload images, videos, audio and documents through a clean web UI or a public AP
 
 ---
 
-## 🎯 What is GitHub CDN?
+## What is GitHub CDN?
 
 **GitHub CDN** is a zero-database, open-source file hosting service that uses **GitHub repositories as storage** and **jsDelivr** as a global CDN layer.
 
@@ -66,16 +66,16 @@ It ships with:
 - Automatic file-type routing into `image/`, `video/`, `audio/`, `docs/` folders
 
 It's perfect for:
-- 📷 Hosting media for blogs, bots, or small web apps
-- 🎬 Sharing videos and audio without platform restrictions
-- 🤖 Powering media uploads from WhatsApp bots, Telegram bots, or scripts
-- 📦 Free, permanent file hosting that scales up to 1 GB per repo
+- Hosting media for blogs, bots, or small web apps
+- Sharing videos and audio without platform restrictions
+- Powering media uploads from WhatsApp bots, Telegram bots, or scripts
+- Free, permanent file hosting that scales up to 1 GB per repo
 
 > **Storage tip:** A single GitHub repo holds up to **1 GB** before warnings appear. When you're running low, just create a new storage repo and update `GITHUB_REPO` in your `.env` — no code changes needed.
 
 ---
 
-## ✨ Features
+## Features
 
 | Category | Capabilities |
 | --- | --- |
@@ -92,7 +92,7 @@ It's perfect for:
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
@@ -108,7 +108,7 @@ It's perfect for:
 
 ---
 
-## ⚙ How It Works
+## How It Works
 
 ```
                         ┌─────────────────────────────┐
@@ -147,7 +147,7 @@ It's perfect for:
 
 ---
 
-## 🚀 Demo
+## Demo
 
 | Page | URL |
 | --- | --- |
@@ -156,7 +156,7 @@ It's perfect for:
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before you start, make sure you have:
 
@@ -169,9 +169,9 @@ Before you start, make sure you have:
 
 ---
 
-## 🧰 Step-by-Step Setup (Total Beginner Friendly)
+## Step-by-Step Setup (Total Beginner Friendly)
 
-> 💡 **New to all this?** Just follow each step in order. Don't skip — every variable matters.
+> **New to all this?** Just follow each step in order. Don't skip — every variable matters.
 
 ### 1️⃣ Clone the Repository
 
@@ -200,7 +200,7 @@ This is the repo where your uploaded files will actually be stored (separate fro
 4. Click **Create repository**.
 5. Note the repository name — you'll use it as `GITHUB_REPO` in your `.env`.
 
-> ⚠️ Each GitHub repo holds up to **1 GB** of files before you receive storage warnings. See [Storage Repo Rotation](#-storage-repo-rotation) for how to switch repos without downtime.
+> Each GitHub repo holds up to **1 GB** of files before you receive storage warnings. See [Storage Repo Rotation](#-storage-repo-rotation) for how to switch repos without downtime.
 
 ### 4️⃣ Generate a GitHub Personal Access Token
 
@@ -216,13 +216,13 @@ The server needs a token to commit files to your storage repo via the GitHub API
 7. **Copy the token immediately** — it is shown only once.
 8. Save it as `GITHUB_TOKEN` in your `.env`.
 
-> 🔒 Treat your token like a password. Never commit it to any public repository.
+> Treat your token like a password. Never commit it to any public repository.
 
 ### 5️⃣ Set Up Cloudflare Turnstile (CAPTCHA)
 
 Turnstile protects the public upload and delete pages from bots. It's completely free.
 
-> 💡 Only the web UI uses Turnstile. The `/api/upload.php` endpoint skips it entirely — perfect for scripts and bots.
+> Only the web UI uses Turnstile. The `/api/upload.php` endpoint skips it entirely — perfect for scripts and bots.
 
 You will need **two** Turnstile widgets — one for the upload form and one for the delete form — each with its own **Site Key**. You only need **one Secret Key** (reuse it for both, or create separate ones).
 
@@ -269,7 +269,7 @@ CF_TURNSTILE_SECRET_KEY=your_turnstile_secret_key
 CF_TURNSTILE_API_URL=https://challenges.cloudflare.com
 ```
 
-> 🔒 **NEVER commit `.env` to git.** Make sure it's listed in `.gitignore`.
+> **NEVER commit `.env` to git.** Make sure it's listed in `.gitignore`.
 
 ---
 
@@ -292,7 +292,7 @@ Visit **<http://localhost:5000>** in your browser. You should see the GitHub CDN
 
 ---
 
-## 🚢 Deploying to Production (PM2)
+## Deploying to Production (PM2)
 
 [PM2](https://pm2.keymetrics.io/) keeps your app running 24/7 and restarts it automatically if it crashes.
 
@@ -351,12 +351,12 @@ sudo certbot --nginx -d ghbcdn.yourdomain.com
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 > Base URL (your deployment): `https://ghbcdn.yourdomain.com`
 > Live demo base URL: `https://ghbcdn.gifted.co.ke`
 
-### 🔼 Upload a File — `POST /api/upload.php`
+### Upload a File — `POST /api/upload.php`
 
 Public endpoint — **no CAPTCHA required**. Use it from scripts, bots, or mobile apps.
 
@@ -431,7 +431,7 @@ print(r.json()['rawUrl'])
 
 ---
 
-### 🔽 Delete a File — `DELETE /giftedDelete.php`
+### Delete a File — `DELETE /giftedDelete.php`
 
 Removes the file from your GitHub storage repo. Requires a valid Cloudflare Turnstile token.
 
@@ -467,7 +467,7 @@ curl -X DELETE https://ghbcdn.gifted.co.ke/giftedDelete.php \
 
 ---
 
-### 🌐 Web Upload Endpoint — `POST /giftedUpload.php`
+### Web Upload Endpoint — `POST /giftedUpload.php`
 
 Same as `/api/upload.php` but **requires** a valid Cloudflare Turnstile token in the request body. Used exclusively by the built-in upload UI.
 
@@ -478,7 +478,7 @@ Same as `/api/upload.php` but **requires** a valid Cloudflare Turnstile token in
 
 ---
 
-## 🖥 Web Interface
+## Web Interface
 
 | Route | What it does |
 | --- | --- |
@@ -489,7 +489,7 @@ Both pages are fully responsive (mobile + desktop) and support dark / light mode
 
 ---
 
-## 🗂 Project Structure
+## Project Structure
 
 ```
 github-cdn/
@@ -507,7 +507,7 @@ github-cdn/
 
 ---
 
-## 🔧 Environment Variables Reference
+## Environment Variables Reference
 
 | Variable | Required | Default | Description |
 | --- | :---: | --- | --- |
@@ -528,7 +528,7 @@ github-cdn/
 
 ---
 
-## 🔄 Storage Repo Rotation
+## Storage Repo Rotation
 
 A single GitHub repository holds up to **1 GB** of data. When you start approaching that limit:
 
@@ -541,7 +541,7 @@ This lets you scale storage horizontally with zero downtime.
 
 ---
 
-## 🛡 Rate Limits & Security
+## Rate Limits & Security
 
 - **Upload rate limit:** 10 requests / 5 minutes / IP (configurable in `api/index.js`).
 - **File size cap:** 50 MB (set in `multer` limits).
@@ -553,7 +553,7 @@ This lets you scale storage horizontally with zero downtime.
 
 ---
 
-## 🧯 Troubleshooting / FAQ
+## Troubleshooting / FAQ
 
 <details>
 <summary><b>"File type not allowed"</b></summary>
@@ -608,7 +608,7 @@ See [Storage Repo Rotation](#-storage-repo-rotation). Create a new repo, update 
 
 ---
 
-## 🗺 Roadmap
+## Roadmap
 
 - [ ] Optional delete key per upload (like Gifted CDN) for API-based deletion without CAPTCHA
 - [ ] File listing / dashboard UI
@@ -619,7 +619,7 @@ See [Storage Repo Rotation](#-storage-repo-rotation). Create a new repo, update 
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome and appreciated! 💚
 
@@ -633,7 +633,7 @@ Please test your changes locally before submitting.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License**.
 
@@ -643,7 +643,7 @@ MIT © 2024 - Present  Maurice Gift / GiftedTech
 
 ---
 
-## 👤 Author & Contact
+## Author & Contact
 
 **Maurice Gift** — *Founder, GiftedTech*
 
