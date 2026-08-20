@@ -134,6 +134,15 @@ const validateFile = (req, res, next) => {
   next();
 };
 
+const JSDELIVR_MAX_SIZE = 20 * 1024 * 1024; // jsDelivr cannot serve files over 20MB
+
+function buildRawUrl(filePath, fileSize) {
+  if (fileSize > JSDELIVR_MAX_SIZE) {
+    return `${config.rawApiUrl}/${config.githubUser}/${config.githubRepo}/${config.repoBranch}/${filePath}`;
+  }
+  return `${config.cdnApiUrl}/${config.githubUser}/${config.githubRepo}@${config.repoBranch}/${filePath}`;
+}
+
 async function uploadToGitHub(file, folder, res, includeTurnstile = true) {
   const originalFileName = `${makeId()}_${file.originalname}`;
   const fileName = originalFileName
@@ -152,7 +161,7 @@ async function uploadToGitHub(file, folder, res, includeTurnstile = true) {
     try {
       const existingFileResponse = await axios.get(apiUrl, { headers });
       if (existingFileResponse.data) {
-        const rawUrl = `${config.cdnApiUrl}/${config.githubUser}/${config.githubRepo}@${config.repoBranch}/${filePath}`;
+        const rawUrl = buildRawUrl(filePath, file.buffer.length);
         return res.json({ 
           success: true, 
           rawUrl: rawUrl,
@@ -173,7 +182,7 @@ async function uploadToGitHub(file, folder, res, includeTurnstile = true) {
 
     await axios.put(apiUrl, data, { headers });
 
-    const rawUrl = `${config.cdnApiUrl}/${config.githubUser}/${config.githubRepo}@${config.repoBranch}/${filePath}`;
+    const rawUrl = buildRawUrl(filePath, file.buffer.length);
     res.json({ 
       success: true, 
       rawUrl: rawUrl 
